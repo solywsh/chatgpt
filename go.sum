@@ -1,7 +1,2 @@
-github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
-github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
-github.com/solywsh/go-gpt3 v0.0.1 h1:pXQkrtoICQzpCnKllT2x2wdKKFeplc/LkrawJt0BXUA=
-github.com/solywsh/go-gpt3 v0.0.1/go.mod h1:ipcMITBWxGw4T31sAxltaYUR1GbkGk81dNPGF+7hVWk=
-github.com/stretchr/testify v1.8.1 h1:w7B6lhMri9wdJUVmEZPGGhZzrYTPvgJArz7wNPgYKsk=
-golang.org/x/net v0.4.0 h1:Q5QPcMlvfxFTAPV0+07Xz/MpK9NTXu2VDUuy0FeMfaU=
-gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
+github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad h1:xuO52/X2TArHVbDISrxXasZrDhdsSGABAR5sJrePVGU=
+github.com/sashabaranov/go-gpt3 v0.0.0-20221202105456-0f9f4aa343ad/go.mod h1:BIZdbwdzxZbCrcKGMGH6u2eyGe1xFuX9Anmh3tCP8lQ=

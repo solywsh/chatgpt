@@ -2,12 +2,11 @@ package chatgpt
 
 import (
 	"context"
-	"fmt"
-	gpt3 "github.com/solywsh/go-gpt3"
+	gogpt "github.com/sashabaranov/go-gpt3"
 )
 
 type ChatGPT struct {
-	client gpt3.Client
+	client *gogpt.Client
 	ctx    context.Context
 	userId string
 }
@@ -19,7 +18,7 @@ func New(ApiKey, UserId string) *ChatGPT {
 		cancel()
 	}()
 	return &ChatGPT{
-		client: gpt3.NewClient(ApiKey),
+		client: gogpt.NewClient(ApiKey),
 		ctx:    ctx,
 		userId: UserId,
 	}
@@ -29,24 +28,28 @@ func (c *ChatGPT) Close() {
 }
 
 func (c *ChatGPT) Chat(question string) (answer string, err error) {
-	resp, err := c.client.CompletionWithEngine(c.ctx, gpt3.TextDavinci003Engine, gpt3.CompletionRequest{
-		Prompt: []string{
-			question,
-		},
-		MaxTokens: gpt3.IntPtr(30),
-		User:      c.userId,
-	})
+	req := gogpt.CompletionRequest{
+		Model:            gogpt.GPT3TextDavinci003,
+		MaxTokens:        4096,
+		Prompt:           question,
+		Temperature:      0.9,
+		TopP:             1,
+		N:                1,
+		FrequencyPenalty: 0,
+		PresencePenalty:  0.5,
+		User:             c.userId,
+	}
+	resp, err := c.client.CreateCompletion(c.ctx, req)
 	if err != nil {
 		return "", err
 	}
-	fmt.Printf("resp: %+v", resp)
 	answer = resp.Choices[0].Text
-	for {
+	for len(answer) > 0 {
 		if answer[0] == '\n' {
 			answer = answer[1:]
 		} else {
 			break
 		}
 	}
-	return answer, err
+	return resp.Choices[0].Text, err
 }
