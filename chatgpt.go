@@ -30,7 +30,7 @@ func (c *ChatGPT) Close() {
 func (c *ChatGPT) Chat(question string) (answer string, err error) {
 	req := gogpt.CompletionRequest{
 		Model:            gogpt.GPT3TextDavinci003,
-		MaxTokens:        4096,
+		MaxTokens:        4000,
 		Prompt:           question,
 		Temperature:      0.9,
 		TopP:             1,
