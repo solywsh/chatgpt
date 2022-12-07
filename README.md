@@ -17,7 +17,6 @@ func main() {
 	defer chat.Close()
 	question := "你认为2022年世界杯的冠军是谁？"
 	fmt.Printf("Q: %s\n", question)
-	_, _ = fmt.Scanln(&question)
 	answer, err := chat.Chat(question)
 	if err != nil {
 		fmt.Println(err)
