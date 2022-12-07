@@ -9,7 +9,7 @@ package main
 
 import (
 	"fmt"
-	chatgpt "github.com/solywsh/chartgpt"
+	chatgpt "github.com/solywsh/chatgpt"
 )
 
 func main() {

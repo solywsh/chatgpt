@@ -1,4 +1,4 @@
-module github.com/solywsh/chartgpt
+module github.com/solywsh/chatgpt
 
 go 1.19
 
