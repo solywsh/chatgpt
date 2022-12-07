@@ -1,4 +1,4 @@
-     # chatgpt
+# chatgpt
 
 > chartgpt client for golang
 
