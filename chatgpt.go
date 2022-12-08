@@ -13,6 +13,7 @@ type ChatGPT struct {
 	maxToken    int
 	timeOut     time.Duration
 	timeOutChan chan struct{}
+	cancel      func()
 }
 
 func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
@@ -21,7 +22,6 @@ func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
 	go func() {
 		<-ctx.Done()
 		timeOutChan <- struct{}{}
-		cancel()
 	}()
 	return &ChatGPT{
 		client:      gogpt.NewClient(ApiKey),
@@ -30,10 +30,13 @@ func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
 		maxToken:    1024,
 		timeOut:     timeOut,
 		timeOutChan: timeOutChan,
+		cancel: func() {
+			cancel()
+		},
 	}
 }
 func (c *ChatGPT) Close() {
-	c.ctx.Done()
+	c.cancel()
 }
 
 func (c *ChatGPT) GetTimeOutChan() chan struct{} {
