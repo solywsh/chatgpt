@@ -3,6 +3,7 @@ package chatgpt
 import (
 	"context"
 	gogpt "github.com/sashabaranov/go-gpt3"
+	"time"
 )
 
 type ChatGPT struct {
@@ -10,10 +11,11 @@ type ChatGPT struct {
 	ctx      context.Context
 	userId   string
 	maxToken int
+	timeOut  time.Duration
 }
 
-func New(ApiKey, UserId string) *ChatGPT {
-	ctx, cancel := context.WithCancel(context.Background())
+func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
+	ctx, cancel := context.WithTimeout(context.Background(), timeOut)
 	go func() {
 		<-ctx.Done()
 		cancel()
