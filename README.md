@@ -13,12 +13,12 @@ import (
 )
 
 func main() {
-	chat := New("", "", 10*time.Second)
+	chat := New("openai_key", "", 10*time.Second)
 	defer chat.Close()
-	select {
-	case <-chat.GetTimeOutChan():
-		fmt.Println("time out")
-	}
+	//select {
+	//case <-chat.GetTimeOutChan():
+	//	fmt.Println("time out")
+	//}
 	question := "中国在欧洲\n"
 	fmt.Printf("Q: %s\n", question)
 	answer, err := chat.Chat(question)

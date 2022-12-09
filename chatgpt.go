@@ -16,9 +16,7 @@ type ChatGPT struct {
 	timeOut        time.Duration // 超时时间, 0表示不超时
 	timeOutChan    chan struct {
 	}
-	cancel         func()
-	stopFlag       []string // 如果不设置机器会联想并返回联想结束语句
-	maxStopFlagLen int
+	cancel func()
 
 	ChatContext *ChatContext
 }
@@ -42,15 +40,13 @@ func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
 		userId:         UserId,
 		maxQuestionLen: 1024, // 最大问题长度
 		maxAnswerLen:   1024, // 最大答案长度
-		maxText:        4096, // 最大文本 = 问题 + 回答
+		maxText:        4096, // 最大文本 = 问题 + 回答, 接口限制
 		timeOut:        timeOut,
 		timeOutChan:    timeOutChan,
 		cancel: func() {
 			cancel()
 		},
-		stopFlag:       []string{"."},
-		maxStopFlagLen: 1,
-		ChatContext:    NewContext(),
+		ChatContext: NewContext(),
 	}
 }
 func (c *ChatGPT) Close() {
@@ -69,7 +65,7 @@ func (c *ChatGPT) SetMaxQuestionLen(maxQuestionLen int) {
 }
 
 func (c *ChatGPT) Chat(question string) (answer string, err error) {
-	if len(question)+c.maxAnswerLen+c.maxStopFlagLen > c.maxText {
+	if len(question)+c.maxAnswerLen > c.maxText {
 		question = question[:c.maxText-c.maxAnswerLen]
 	}
 	req := gogpt.CompletionRequest{
@@ -82,19 +78,11 @@ func (c *ChatGPT) Chat(question string) (answer string, err error) {
 		FrequencyPenalty: 0,
 		PresencePenalty:  0.5,
 		User:             c.userId,
-		Stop:             c.stopFlag,
+		Stop:             []string{},
 	}
 	resp, err := c.client.CreateCompletion(c.ctx, req)
 	if err != nil {
 		return "", err
 	}
-	answer = resp.Choices[0].Text
-	for len(answer) > 0 {
-		if answer[:1] == "\n" || answer[0] == ' ' {
-			answer = answer[1:]
-		} else {
-			break
-		}
-	}
-	return resp.Choices[0].Text, err
+	return formatAnswer(resp.Choices[0].Text), err
 }
