@@ -38,20 +38,6 @@ type role struct {
 	name string
 }
 
-func (c *ChatContext) SetHumanRole(role string) {
-	c.humanRole.name = role
-	c.restartSeq = "\n" + c.humanRole.name + ": "
-}
-
-func (c *ChatContext) SetAiRole(role string) {
-	c.aiRole.name = role
-	c.startSeq = "\n" + c.aiRole.name + ": "
-}
-
-func (c *ChatContext) SetMaxSeqTimes(times int) {
-	c.maxSeqTimes = times
-}
-
 func NewContext() *ChatContext {
 	return &ChatContext{
 		aiRole:      &role{name: DefaultAiRole},
@@ -66,7 +52,37 @@ func NewContext() *ChatContext {
 	}
 }
 
+func (c *ChatContext) SetHumanRole(role string) {
+	c.humanRole.name = role
+	c.restartSeq = "\n" + c.humanRole.name + ": "
+}
+
+func (c *ChatContext) SetAiRole(role string) {
+	c.aiRole.name = role
+	c.startSeq = "\n" + c.aiRole.name + ": "
+}
+
+func (c *ChatContext) SetMaxSeqTimes(times int) {
+	c.maxSeqTimes = times
+}
+
+func (c *ChatContext) GetMaxSeqTimes() int {
+	return c.maxSeqTimes
+}
+
+func (c *ChatContext) SetBackground(background string) {
+	c.background = background
+}
+
+func (c *ChatContext) SetPreset(preset string) {
+	c.preset = preset
+}
+
 func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
+	question = question + "."
+	if len(question) > c.maxQuestionLen {
+		return "", OverMaxQuestionLength
+	}
 	if c.ChatContext.seqTimes >= c.ChatContext.maxSeqTimes {
 		return "", OverMaxSequenceTimes
 	}
@@ -80,7 +96,7 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 			promptTable = append(promptTable, v.role.name+": "+v.prompt)
 		}
 	}
-	promptTable = append(promptTable, "\n"+c.ChatContext.restartSeq+question+".")
+	promptTable = append(promptTable, "\n"+c.ChatContext.restartSeq+question)
 	prompt := strings.Join(promptTable, "\n")
 	prompt += c.ChatContext.startSeq
 	if len(prompt) > c.maxText-c.maxAnswerLen {

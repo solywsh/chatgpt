@@ -56,21 +56,26 @@ func (c *ChatGPT) GetDoneChan() chan struct{} {
 	return c.doneChan
 }
 
-func (c *ChatGPT) SetMaxQuestionLen(maxQuestionLen int) {
+func (c *ChatGPT) SetMaxQuestionLen(maxQuestionLen int) int {
 	if maxQuestionLen > c.maxText-c.maxAnswerLen {
 		maxQuestionLen = c.maxText - c.maxAnswerLen
 	}
 	c.maxQuestionLen = maxQuestionLen
+	return c.maxQuestionLen
 }
 
 func (c *ChatGPT) Chat(question string) (answer string, err error) {
+	question = question + "."
+	if len(question) > c.maxQuestionLen {
+		return "", OverMaxQuestionLength
+	}
 	if len(question)+c.maxAnswerLen > c.maxText {
 		question = question[:c.maxText-c.maxAnswerLen]
 	}
 	req := gogpt.CompletionRequest{
 		Model:            gogpt.GPT3TextDavinci003,
 		MaxTokens:        c.maxAnswerLen,
-		Prompt:           question, // 加"."提示AI结束
+		Prompt:           question,
 		Temperature:      0.9,
 		TopP:             1,
 		N:                1,
