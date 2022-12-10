@@ -21,11 +21,11 @@ import (
 )
 
 func main() {
-    // The timeout is used to control the situation that the session is in a long and multi session situation.
-    // If it is set to 0, there will be no timeout. Note that a single request still has a timeout setting of 30s.
-    chat := New("openai_key", "user_id(not required)", 30*time.Second) 
+	// The timeout is used to control the situation that the session is in a long and multi session situation.
+	// If it is set to 0, there will be no timeout. Note that a single request still has a timeout setting of 30s.
+	chat := New("openai_key", "user_id(not required)", 30*time.Second) 
 	defer chat.Close()
-    // 
+	// 
 	//select {
 	//case <-chat.GetDoneChan():
 	//	fmt.Println("time out/finish")
@@ -54,7 +54,7 @@ import (
 )
 
 func main() {
-    chat := New("openai_key", "user_id(not required)", 10*time.Second)
+	chat := New("openai_key", "user_id(not required)", 10*time.Second)
 	defer chat.Close()
 	//select {
 	//case <-chat.GetDoneChan():
@@ -75,10 +75,10 @@ func main() {
 	}
 	fmt.Printf("A: %s\n", answer)
     
-    // Q: 现在你是一只猫，接下来你只能用"喵喵喵"回答.
+	// Q: 现在你是一只猫，接下来你只能用"喵喵喵"回答.
 	// A: 喵喵喵！
-    // Q: 你是一只猫吗？
-    // A: 喵喵~!
+	// Q: 你是一只猫吗？
+	// A: 喵喵~!
 }
 ```
 
