@@ -14,9 +14,8 @@ type ChatGPT struct {
 	maxText        int
 	maxAnswerLen   int
 	timeOut        time.Duration // 超时时间, 0表示不超时
-	timeOutChan    chan struct {
-	}
-	cancel func()
+	doneChan       chan struct{}
+	cancel         func()
 
 	ChatContext *ChatContext
 }
@@ -42,7 +41,7 @@ func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
 		maxAnswerLen:   1024, // 最大答案长度
 		maxText:        4096, // 最大文本 = 问题 + 回答, 接口限制
 		timeOut:        timeOut,
-		timeOutChan:    timeOutChan,
+		doneChan:       timeOutChan,
 		cancel: func() {
 			cancel()
 		},
@@ -53,8 +52,8 @@ func (c *ChatGPT) Close() {
 	c.cancel()
 }
 
-func (c *ChatGPT) GetTimeOutChan() chan struct{} {
-	return c.timeOutChan
+func (c *ChatGPT) GetDoneChan() chan struct{} {
+	return c.doneChan
 }
 
 func (c *ChatGPT) SetMaxQuestionLen(maxQuestionLen int) {
@@ -71,7 +70,7 @@ func (c *ChatGPT) Chat(question string) (answer string, err error) {
 	req := gogpt.CompletionRequest{
 		Model:            gogpt.GPT3TextDavinci003,
 		MaxTokens:        c.maxAnswerLen,
-		Prompt:           question + ".", // 加"."提示AI结束
+		Prompt:           question, // 加"."提示AI结束
 		Temperature:      0.9,
 		TopP:             1,
 		N:                1,
