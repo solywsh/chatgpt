@@ -68,7 +68,7 @@ func NewContext() *ChatContext {
 
 func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 	if c.ChatContext.seqTimes >= c.ChatContext.maxSeqTimes {
-		return "", &OverMaxSequenceTimes{}
+		return "", OverMaxSequenceTimes
 	}
 	var promptTable []string
 	promptTable = append(promptTable, c.ChatContext.background)
@@ -84,7 +84,7 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 	prompt := strings.Join(promptTable, "\n")
 	prompt += c.ChatContext.startSeq
 	if len(prompt) > c.maxText-c.maxAnswerLen {
-		return "", &OverMaxTextLength{}
+		return "", OverMaxTextLength
 	}
 	req := gogpt.CompletionRequest{
 		Model:            gogpt.GPT3TextDavinci003,
