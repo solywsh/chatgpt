@@ -39,19 +39,19 @@ type (
 	ChatContextOption func(*ChatContext)
 
 	conversation struct {
-		role   *role
-		prompt string
+		Role   *role
+		Prompt string
 	}
 
 	role struct {
-		name string
+		Name string
 	}
 )
 
 func NewContext(options ...ChatContextOption) *ChatContext {
 	ctx := &ChatContext{
-		aiRole:           &role{name: DefaultAiRole},
-		humanRole:        &role{name: DefaultHumanRole},
+		aiRole:           &role{Name: DefaultAiRole},
+		humanRole:        &role{Name: DefaultHumanRole},
 		background:       fmt.Sprintf(DefaultBackground, strings.Join(DefaultCharacter, ", ")+"."),
 		maxSeqTimes:      10,
 		preset:           fmt.Sprintf(DefaultPreset, DefaultHumanRole, DefaultAiRole),
@@ -108,13 +108,13 @@ func (c *ChatContext) LoadConversation(path string) error {
 }
 
 func (c *ChatContext) SetHumanRole(role string) {
-	c.humanRole.name = role
-	c.restartSeq = "\n" + c.humanRole.name + ": "
+	c.humanRole.Name = role
+	c.restartSeq = "\n" + c.humanRole.Name + ": "
 }
 
 func (c *ChatContext) SetAiRole(role string) {
-	c.aiRole.name = role
-	c.startSeq = "\n" + c.aiRole.name + ": "
+	c.aiRole.Name = role
+	c.startSeq = "\n" + c.aiRole.Name + ": "
 }
 
 func (c *ChatContext) SetMaxSeqTimes(times int) {
@@ -149,10 +149,10 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 	promptTable = append(promptTable, c.ChatContext.background)
 	promptTable = append(promptTable, c.ChatContext.preset)
 	for _, v := range c.ChatContext.old {
-		if v.role == c.ChatContext.humanRole {
-			promptTable = append(promptTable, "\n"+v.role.name+": "+v.prompt)
+		if v.Role == c.ChatContext.humanRole {
+			promptTable = append(promptTable, "\n"+v.Role.Name+": "+v.Prompt)
 		} else {
-			promptTable = append(promptTable, v.role.name+": "+v.prompt)
+			promptTable = append(promptTable, v.Role.Name+": "+v.Prompt)
 		}
 	}
 	promptTable = append(promptTable, "\n"+c.ChatContext.restartSeq+question)
@@ -171,7 +171,7 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 		FrequencyPenalty: 0,
 		PresencePenalty:  0.5,
 		User:             c.userId,
-		Stop:             []string{c.ChatContext.aiRole.name + ":", c.ChatContext.humanRole.name + ":"},
+		Stop:             []string{c.ChatContext.aiRole.Name + ":", c.ChatContext.humanRole.Name + ":"},
 	}
 	resp, err := c.client.CreateCompletion(c.ctx, req)
 	if err != nil {
@@ -179,12 +179,12 @@ func (c *ChatGPT) ChatWithContext(question string) (answer string, err error) {
 	}
 	resp.Choices[0].Text = formatAnswer(resp.Choices[0].Text)
 	c.ChatContext.old = append(c.ChatContext.old, conversation{
-		role:   c.ChatContext.humanRole,
-		prompt: question,
+		Role:   c.ChatContext.humanRole,
+		Prompt: question,
 	})
 	c.ChatContext.old = append(c.ChatContext.old, conversation{
-		role:   c.ChatContext.aiRole,
-		prompt: resp.Choices[0].Text,
+		Role:   c.ChatContext.aiRole,
+		Prompt: resp.Choices[0].Text,
 	})
 	c.ChatContext.seqTimes++
 	return resp.Choices[0].Text, nil
