@@ -1,3 +1,4 @@
 .idea
 chatgpt_test.go
 test
+*.local
