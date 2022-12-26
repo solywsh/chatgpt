@@ -1,4 +1,5 @@
 .idea
-chatgpt_test.go
 test
 *.local
+.github
+test.conversation
