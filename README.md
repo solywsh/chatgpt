@@ -1,7 +1,5 @@
-# chatgpt
-
-> chartgpt client for golang
-
+# chatgpt(use gpt3)
+**Note**: Since openai released the api for chatgpt, it means that this repository is no longer of any practical use. If you wish to find a suitable package, you may consider this repository:https://github.com/sashabaranov/go-openai
 ## Usege
 
 Download the package first:

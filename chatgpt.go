@@ -48,6 +48,7 @@ func New(ApiKey, UserId string, timeOut time.Duration) *ChatGPT {
 		ChatContext: NewContext(),
 	}
 }
+
 func (c *ChatGPT) Close() {
 	c.cancel()
 }
